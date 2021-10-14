@@ -13,6 +13,7 @@ RUN apt-get update \
         python \
         openjdk-8-jdk-headless \
         patch \
+		net-tools\
 	unzip \
     && cd /tmp \
     && wget http://mirror.linux-ia64.org/apache/atlas/${VERSION}/apache-atlas-${VERSION}-sources.tar.gz \
@@ -57,7 +58,9 @@ RUN cd /opt/apache-atlas-${VERSION} \
     && tail -f /opt/apache-atlas-${VERSION}/logs/application.log | sed '/AtlasAuthenticationFilter.init(filterConfig=null)/ q' \
     && sleep 10 \
     && /opt/apache-atlas-${VERSION}/bin/atlas_stop.py
-	
+
+RUN let j=0; while (($j \< 1)); do j=$(netstat -an | grep 21000 | grep LISTEN | wc -l); echo "j==$j"; sleep 10; done
+
 RUN /opt/gremlin/install-gremlin.sh
 
 RUN /opt/gremlin/start-gremlin-server.sh

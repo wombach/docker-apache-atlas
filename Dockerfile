@@ -1,23 +1,22 @@
 FROM scratch
 FROM ubuntu:18.04
-LABEL maintainer="vadim@clusterside.com"
-ARG VERSION=2.1.0
+LABEL maintainer="andreas.wombacher@aureliusenterprise.com"
+ARG VERSION=2.2.0
 
 RUN apt-get update \
     && apt-get -y upgrade \
     && apt-get -y install apt-utils \
     && apt-get -y install \
-        maven \
-        wget \
-        git \
-        python \
-        openjdk-8-jdk-headless \
-        patch \
-		net-tools\
-	unzip \
+    maven \
+    wget \
+    git \
+    python \
+    openjdk-8-jdk-headless \
+    patch \
+    net-tools\
+    unzip \
     && cd /tmp \
     && wget http://mirror.linux-ia64.org/apache/atlas/${VERSION}/apache-atlas-${VERSION}-sources.tar.gz \
-    && mkdir -p /opt/gremlin \
     && mkdir -p /tmp/atlas-src \
     && tar --strip 1 -xzvf apache-atlas-${VERSION}-sources.tar.gz -C /tmp/atlas-src \
     && rm apache-atlas-${VERSION}-sources.tar.gz \
@@ -30,8 +29,8 @@ RUN apt-get update \
     && rm -Rf /tmp/atlas-src \
     && rm -Rf /tmp/.mvn-repo \
     && apt-get -y --purge remove \
-        maven \
-        git \
+    maven \
+    git \
     && apt-get -y remove openjdk-11-jre-headless \
     && apt-get -y autoremove \
     && apt-get -y clean
@@ -47,8 +46,6 @@ RUN cd /opt/apache-atlas-${VERSION}/bin \
 COPY conf/hbase/hbase-site.xml.template /opt/apache-atlas-${VERSION}/conf/hbase/hbase-site.xml.template
 COPY conf/atlas-env.sh /opt/apache-atlas-${VERSION}/conf/atlas-env.sh
 
-COPY conf/gremlin /opt/gremlin/
-
 RUN cd /opt/apache-atlas-${VERSION} \
     && ./bin/atlas_start.py -setup || true
 
@@ -58,9 +55,3 @@ RUN cd /opt/apache-atlas-${VERSION} \
     && tail -f /opt/apache-atlas-${VERSION}/logs/application.log | sed '/AtlasAuthenticationFilter.init(filterConfig=null)/ q' \
     && sleep 10 \
     && /opt/apache-atlas-${VERSION}/bin/atlas_stop.py
-
-RUN let j=0; while (($j \< 1)); do j=$(netstat -an | grep 21000 | grep LISTEN | wc -l); echo "j==$j"; sleep 10; done
-
-RUN /opt/gremlin/install-gremlin.sh
-
-RUN /opt/gremlin/start-gremlin-server.sh

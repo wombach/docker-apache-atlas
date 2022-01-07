@@ -19,6 +19,11 @@ Basic usage
 docker pull sburn/apache-atlas
 ```
 
+```
+docker build -t apache-atlas-image .
+docker run -d -p21000:21000 --name atlas21 apache-atlas-image /opt/apache-atlas-2.1.0/bin/atlas_start.py
+```
+
 2. Start Apache Atlas in a container exposing Web-UI port 21000:
 
 ```bash

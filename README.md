@@ -19,6 +19,18 @@ Basic usage
 docker pull sburn/apache-atlas
 ```
 
+https://jsta.github.io/r-docker-tutorial/04-Dockerhub.html
+```
+docker build -t apache-atlas-image .
+docker image ls
+docker login --username=wombach
+docker tag fabf8e81e3c0 wombach/docker-apache-atlas:221
+docker push wombach/docker-apache-atlas:221
+docker run -d -p21000:21000 --name atlas21 apache-atlas-image /opt/apache-atlas-2.1.0/bin/atlas_start.py
+```
+you can add --no-cache in docker build to make sure you start from scratch
+
+
 2. Start Apache Atlas in a container exposing Web-UI port 21000:
 
 ```bash
@@ -29,7 +41,7 @@ docker run -d \
     /opt/apache-atlas-2.1.0/bin/atlas_start.py
 ```
 
-Please, take into account that the fist startup of Atlas may take up to few mins depending on host machine performance before web-interface become available at `http://localhost:21000/`
+Please, take into account that the first startup of Atlas may take up to few mins depending on host machine performance before web-interface become available at `http://localhost:21000/`
 
 Web-UI default credentials: `admin / admin`
 
@@ -57,7 +69,7 @@ docker exec -ti atlas tail -f /opt/apache-atlas-2.1.0/logs/application.log
 Run the example (this will add sample types and instances along with traits):
 
 ```bash
-docker exec -ti atlas /opt/apache-atlas-2.1.0/bin/quick-start.sh
+docker exec -ti atlas /opt/apache-atlas-2.1.0/bin/quick_start.py
 ```
 
 Start Atlas overriding settings by environment variables 
@@ -116,15 +128,15 @@ Image contains build-in extras for those who want to play with Janusgraph, and A
 
 1. You need Atlas container up and running as shown above.
 
-2. Install gremlin-server and gremlin-console into the container by running included automation script:
+2. Install `gremlin-server` and `gremlin-console` into the container by running included automation script:
 ```bash
 docker exec -ti atlas /opt/gremlin/install-gremlin.sh
 ```
-3. Start gremlin-server in the same container:
+3. Start `gremlin-server` in the same container:
 ```bash
 docker exec -d atlas /opt/gremlin/start-gremlin-server.sh
 ```
-4. Finally, run gremlin-console interactively:
+4. Finally, run `gremlin-console` interactively:
 ```bash
 docker exec -ti atlas /opt/gremlin/run-gremlin-console.sh
 ```

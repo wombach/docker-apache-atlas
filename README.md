@@ -18,11 +18,16 @@ Basic usage
 ```bash
 docker pull sburn/apache-atlas
 ```
-
+https://jsta.github.io/r-docker-tutorial/04-Dockerhub.html
 ```
 docker build -t apache-atlas-image .
+docker image ls
+docker login --username=wombach
+docker tag fabf8e81e3c0 wombach/docker-apache-atlas:221
+docker push wombach/docker-apache-atlas:221
 docker run -d -p21000:21000 --name atlas21 apache-atlas-image /opt/apache-atlas-2.1.0/bin/atlas_start.py
 ```
+you can add --no-cache in docker build to make sure you start from scratch
 
 2. Start Apache Atlas in a container exposing Web-UI port 21000:
 

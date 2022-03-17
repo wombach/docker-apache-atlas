@@ -1,6 +1,6 @@
---- atlas_config.py.orig	2019-05-03 08:22:00.000000000 +0300
-+++ atlas_config.py	2020-01-16 02:14:31.660601445 +0300
-@@ -500,15 +500,18 @@
+--- atlas_config_orig.py	2022-03-11 20:52:45.652447600 +0100
++++ atlas_config.py	2022-03-11 20:44:08.832447600 +0100
+@@ -529,15 +529,18 @@
  
  def wait_for_startup(confdir, wait):
      count = 0
@@ -9,7 +9,7 @@
      port = get_atlas_url_port(confdir)
 -    while True:
 +    pid_file = pidFile(atlasDir())
-+
++    
 +    while not started:
          try:
              s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,30 +21,26 @@
          except Exception as e:
              # Wait for 1 sec before next ping
              sys.stdout.write('.')
-@@ -516,11 +519,20 @@
+@@ -545,9 +548,16 @@
              sleep(1)
  
          if count > wait:
 -            s.close()
 -            break
-+	    s.close()
++            s.close()
 +            sys.stdout.write('\nAtlas Web-UI startup timed out! But, wait for it...')
 +            sys.stdout.flush()
-+	    break
-+
-+        if not os.path.exists(pid_file):
-+            sys.stdout.write('\nApache Atlas startup failed!\nCheck logs: /opt/apache-atlas-2.1.0/logs/application.log')
-+            sys.stdout.flush()
-+	    exit()
-+	    break
++        break
  
++        if not os.path.exists(pid_file):
++            sys.stdout.write('\nApache Atlas startup failed!\nCheck logs: /opt/apache-atlas-2.2.0/logs/application.log')
++            sys.stdout.flush()
++        exit()
++        break
          count = count + 1
  
-+
      sys.stdout.write('\n')
- 
- def run_zookeeper(dir, action, logdir = None, wait=True):
-@@ -555,14 +567,14 @@
+@@ -584,14 +594,14 @@
  
      if zk_url is None:
          if port is None:
@@ -61,9 +57,9 @@
 -            cmd = [os.path.join(dir, solrScript), action, '-z', zk_url, '-p', port]
 +            cmd = [os.path.join(dir, solrScript), action, '-force', '-z', zk_url, '-p', port]
  
-     return runProcess(cmd, logdir, False, wait)
- 
-@@ -572,7 +584,7 @@
+     if homedir is not None:
+         if not os.path.exists(homedir) :
+@@ -614,7 +624,7 @@
      if IS_WINDOWS:
          solrScript = "solr.cmd"
  
@@ -72,8 +68,3 @@
  
      return runProcess(cmd, logdir, False, wait)
  
-@@ -691,3 +703,4 @@
-     windowsPath = subprocess.Popen(cygpathArgs, stdout=subprocess.PIPE).communicate()[0]
-     windowsPath = windowsPath.strip()
-     return windowsPath
-+

@@ -30,7 +30,7 @@
 +            s.close()
 +            sys.stdout.write('\nAtlas Web-UI startup timed out! But, wait for it...')
 +            sys.stdout.flush()
-+        break
++            break
  
 +        if not os.path.exists(pid_file):
 +            sys.stdout.write('\nApache Atlas startup failed!\nCheck logs: /opt/apache-atlas-2.2.0/logs/application.log')

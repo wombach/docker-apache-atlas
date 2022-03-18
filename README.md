@@ -39,8 +39,8 @@ you can add --no-cache in docker build to make sure you start from scratch
 docker run -d \
     -p 21000:21000 \
     --name atlas \
-    sburn/apache-atlas \
-    /opt/apache-atlas-2.1.0/bin/atlas_start.py
+    wombach/docker-apache-atlas \
+    /opt/apache-atlas-2.2.0/bin/atlas_start.py
 ```
 
 Please, take into account that the first startup of Atlas may take up to few mins depending on host machine performance before web-interface become available at `http://localhost:21000/`
@@ -174,6 +174,11 @@ The following environment variables are available for configuration:
 | ATLAS_LOG_DIR | <none> | Where log files are stored. Defatult is logs directory under the base install location
 | ATLAS_PID_DIR | <none> | Where pid files are stored. Defatult is logs directory under the base install location
 | ATLAS_EXPANDED_WEBAPP_DIR | <none> | Where do you want to expand the war file. By Default it is in /server/webapp dir under the base install dir.
+
+Building
+---------
+docker build . -t docker-apache-atlas:2.2.0
+
 
 
 Bug Tracker

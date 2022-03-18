@@ -7,6 +7,7 @@ RUN apt-get update \
     && apt-get -y upgrade \
     && apt-get -y install apt-utils \
     && apt-get -y install \
+    vim\
     maven \
     wget \
     git \
@@ -42,15 +43,29 @@ RUN cd /opt/apache-atlas-${VERSION}/bin \
     && patch -b -f < atlas_start.py.patch \
     && patch -b -f < atlas_config.py.patch
 
-COPY conf/hbase/hbase-site.xml.template /opt/apache-atlas-${VERSION}/conf/hbase/hbase-site.xml.template
+#COPY conf/hbase/hbase-site.xml.template /opt/apache-atlas-${VERSION}/conf/hbase/hbase-site.xml.template
 COPY conf/atlas-env.sh /opt/apache-atlas-${VERSION}/conf/atlas-env.sh
+COPY conf/atlas-application.properties /opt/apache-atlas-${VERSION}/conf/atlas-application.properties
+COPY bin/startup.sh /opt/apache-atlas-${VERSION}/bin/startup.sh
 
-RUN cd /opt/apache-atlas-${VERSION} \
-    && ./bin/atlas_start.py -setup || true
+RUN cd /opt/apache-atlas-${VERSION}/bin \
+    && chmod u+x startup.sh
 
-RUN cd /opt/apache-atlas-${VERSION} \
-    && ./bin/atlas_start.py & \
-    touch /opt/apache-atlas-${VERSION}/logs/application.log \
-    && tail -f /opt/apache-atlas-${VERSION}/logs/application.log | sed '/AtlasAuthenticationFilter.init(filterConfig=null)/ q' \
-    && sleep 10 \
-    && /opt/apache-atlas-${VERSION}/bin/atlas_stop.py
+#ENTRYPOINT [/opt/apache-atlas-2.2.0/bin/startup.sh]
+#RUN cd /opt/apache-atlas-${VERSION} \
+#    && export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64" \
+#    && ./bin/atlas_start.py -setup || true
+
+#RUN touch /opt/apache-atlas-${VERSION}/logs/application.log 
+#RUN cd /opt/apache-atlas-${VERSION} \
+#    && export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64" \
+#    && ./bin/atlas_start.py & \ 
+#    touch /opt/apache-atlas-${VERSION}/logs/application.log \
+#    && tail -f /opt/apache-atlas-${VERSION}/logs/application.log | sed '/AtlasAuthenticationFilter.init(filterConfig=null)/ q' \
+#    && sleep 10 \
+#    && /opt/apache-atlas-${VERSION}/bin/atlas_stop.py
+
+#RUN cd /opt/apache-atlas-${VERSION}/bin \
+#    && export VERSION=${VERSION} \
+#    && nohup ./bin/atlas_start.py > /opt/apache-atlas-${VERSION}/application.log 2>&1 & 
+#    touch /opt/apache-atlas-${VERSION}/logs/application.log \

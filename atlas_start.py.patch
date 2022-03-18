@@ -58,3 +58,4 @@
      else:
          process = mc.java("org.apache.atlas.web.setup.AtlasSetup", [], atlas_classpath, jvm_opts_list, jvm_logdir)
          return process.wait()
+ 

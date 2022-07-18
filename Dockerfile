@@ -69,7 +69,6 @@ RUN cd /opt \
     && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.1/lib/groovy-*.jar \
     && ln -s /opt/apache-atlas-2.2.0/server/webapp/atlas/WEB-INF/lib/groovy-*.jar /opt/apache-tinkerpop-gremlin-server-3.5.3/lib \
     && sed -i 's/assistive_technologies=org.GNOME.Accessibility.AtkWrapper/#assistive_technologies=org.GNOME.Accessibility.AtkWrapper/g' /etc/java-8-openjdk/accessibility.properties 
-#&& rm /opt/apache-tinkerpop-gremlin-server-3.5.1/conf/gremlin/gremlin-server-atlas
 
 COPY conf/gremlin/gremlin-server-atlas.yaml /opt/apache-tinkerpop-gremlin-server-3.5.1/conf/gremlin-server-atlas.yaml
 COPY conf/gremlin/janusgraph-hbase-solr.properties /opt/apache-tinkerpop-gremlin-server-3.5.1/conf/janusgraph-hbase-solr.properties

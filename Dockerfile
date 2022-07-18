@@ -51,21 +51,29 @@ COPY bin/startup.sh /opt/apache-atlas-${VERSION}/bin/startup.sh
 RUN cd /opt/apache-atlas-${VERSION}/bin \
     && chmod u+x startup.sh
 
-#ENTRYPOINT [/opt/apache-atlas-2.2.0/bin/startup.sh]
-#RUN cd /opt/apache-atlas-${VERSION} \
-#    && export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64" \
-#    && ./bin/atlas_start.py -setup || true
+# setup gremlin console 
+# RUN cd /opt \
+#     && wget --no-check-certificate https://dlcdn.apache.org/tinkerpop/3.5.3/apache-tinkerpop-gremlin-console-3.5.3-bin.zip \
+#     && unzip apache-tinkerpop-gremlin-console-3.5.3-bin.zip \
+#     && cd /opt/apache-tinkerpop-gremlin-console-3.5.3/conf \
+#     && sed -i "s/localhost/ip6-localhost/g" ./remote.yaml \
 
-#RUN touch /opt/apache-atlas-${VERSION}/logs/application.log 
-#RUN cd /opt/apache-atlas-${VERSION} \
-#    && export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64" \
-#    && ./bin/atlas_start.py & \ 
-#    touch /opt/apache-atlas-${VERSION}/logs/application.log \
-#    && tail -f /opt/apache-atlas-${VERSION}/logs/application.log | sed '/AtlasAuthenticationFilter.init(filterConfig=null)/ q' \
-#    && sleep 10 \
-#    && /opt/apache-atlas-${VERSION}/bin/atlas_stop.py
+# setup basis for gremlin server
+RUN cd /opt \
+    && wget --no-check-certificate https://dlcdn.apache.org/tinkerpop/3.5.3/apache-tinkerpop-gremlin-server-3.5.3-bin.zip \
+    && unzip apache-tinkerpop-gremlin-server-3.5.3-bin.zip \
+    && ln -s /opt/apache-atlas-2.2.0/server/webapp/atlas/WEB-INF/lib/*.jar /opt/apache-tinkerpop-gremlin-server-3.5.3/lib 2>/dev/null \
+    && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.3/lib/atlas-webapp-2.2.0.jar \
+    && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.3/lib/netty-3.10.5.Final.jar \
+    && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.3/lib/netty-all-4.0.52.Final.jar \
+    && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.1/lib/groovy-*.jar \
+    && ln -s /opt/apache-atlas-2.2.0/server/webapp/atlas/WEB-INF/lib/groovy-*.jar /opt/apache-tinkerpop-gremlin-server-3.5.3/lib \
+    && sed -i 's/assistive_technologies=org.GNOME.Accessibility.AtkWrapper/#assistive_technologies=org.GNOME.Accessibility.AtkWrapper/g' /etc/java-8-openjdk/accessibility.properties 
+#&& rm /opt/apache-tinkerpop-gremlin-server-3.5.1/conf/gremlin/gremlin-server-atlas
 
-#RUN cd /opt/apache-atlas-${VERSION}/bin \
-#    && export VERSION=${VERSION} \
-#    && nohup ./bin/atlas_start.py > /opt/apache-atlas-${VERSION}/application.log 2>&1 & 
-#    touch /opt/apache-atlas-${VERSION}/logs/application.log \
+COPY conf/gremlin/gremlin-server-atlas.yaml /opt/apache-tinkerpop-gremlin-server-3.5.1/conf/gremlin-server-atlas.yaml
+COPY conf/gremlin/janusgraph-hbase-solr.properties /opt/apache-tinkerpop-gremlin-server-3.5.1/conf/janusgraph-hbase-solr.properties
+COPY bin/start-gremlin-server.sh /opt/apache-atlas-${VERSION}/bin/start-gremlin-server.sh
+
+RUN chmod 700 /opt/apache-atlas-${VERSION}/bin/start-gremlin-server.sh
+

@@ -177,12 +177,12 @@ The following environment variables are available for configuration:
 
 Building
 ---------
-docker build . -t docker-apache-atlas:2.2.0
+docker build . -t docker-apache-atlas:2.2.0.4
 
 docker images
 -> gives you the <image ID>
 
-docker tag <image ID> wombach/docker-apache-atlas:2.2.0
+docker tag <image ID> wombach/docker-apache-atlas:2.2.0.4
 
 docker run -d -p 21000:21000 --name atlas220 wombach/docker-apache-atlas:2.2.0 /opt/apache-atlas-2.2.0/bin/startup.sh
 
@@ -196,7 +196,7 @@ for debugging check the log file
 docker exec -it <container id> /bin/bash
 
 publish the image to docker hub
-docker push wombach/docker-apache-atlas:2.2.0.2
+docker push wombach/docker-apache-atlas:2.2.0.4
 
 docker tag a1a6377f55bd wombach/docker-apache-atlas:latest
 docker push wombach/docker-apache-atlas:latest

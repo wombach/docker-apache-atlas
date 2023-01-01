@@ -554,7 +554,7 @@ def wait_for_startup(confdir, wait):
         break
 
         if not os.path.exists(pid_file):
-            sys.stdout.write('\nApache Atlas startup failed!\nCheck logs: /opt/apache-atlas-2.2.0/logs/application.log')
+            sys.stdout.write('\nApache Atlas startup failed!\nCheck logs: /opt/apache-atlas-2.3.0/logs/application.log')
             sys.stdout.flush()
         exit()
         break

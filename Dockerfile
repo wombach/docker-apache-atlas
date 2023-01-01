@@ -66,12 +66,12 @@ RUN cd /opt/apache-atlas-${VERSION}/bin \
 RUN cd /opt \
     && wget --no-check-certificate https://dlcdn.apache.org/tinkerpop/3.5.3/apache-tinkerpop-gremlin-server-3.5.3-bin.zip \
     && unzip apache-tinkerpop-gremlin-server-3.5.3-bin.zip \
-    && ln -s /opt/apache-atlas-2.2.0/server/webapp/atlas/WEB-INF/lib/*.jar /opt/apache-tinkerpop-gremlin-server-3.5.3/lib 2>/dev/null \
-    && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.3/lib/atlas-webapp-2.2.0.jar \
+    && ln -s /opt/apache-atlas-${VERSION}/server/webapp/atlas/WEB-INF/lib/*.jar /opt/apache-tinkerpop-gremlin-server-3.5.3/lib 2>/dev/null \
+    && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.3/lib/atlas-webapp-${VERSION}.jar \
     && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.3/lib/netty-3.10.5.Final.jar \
     && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.3/lib/netty-all-4.0.52.Final.jar \
     && rm -f /opt/apache-tinkerpop-gremlin-server-3.5.1/lib/groovy-*.jar \
-    && ln -s /opt/apache-atlas-2.2.0/server/webapp/atlas/WEB-INF/lib/groovy-*.jar /opt/apache-tinkerpop-gremlin-server-3.5.3/lib \
+    && ln -s /opt/apache-atlas-${VERSION}/server/webapp/atlas/WEB-INF/lib/groovy-*.jar /opt/apache-tinkerpop-gremlin-server-3.5.3/lib \
     && sed -i 's/assistive_technologies=org.GNOME.Accessibility.AtkWrapper/#assistive_technologies=org.GNOME.Accessibility.AtkWrapper/g' /etc/java-8-openjdk/accessibility.properties 
 
 COPY conf/gremlin/gremlin-server-atlas.yaml /opt/apache-tinkerpop-gremlin-server-3.5.1/conf/gremlin-server-atlas.yaml

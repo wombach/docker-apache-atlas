@@ -20,12 +20,12 @@ docker pull sburn/apache-atlas
 ```
 https://jsta.github.io/r-docker-tutorial/04-Dockerhub.html
 ```
-docker build -t apache-atlas-image .
+docker build -t wombach/docker-apache-atlas:2211 .
 docker image ls
 docker login --username=wombach
-docker tag fabf8e81e3c0 wombach/docker-apache-atlas:221
-docker push wombach/docker-apache-atlas:221
-docker save verse_gapminder > verse_gapminder.tar
+# docker tag fabf8e81e3c0 wombach/docker-apache-atlas:2211
+docker push wombach/docker-apache-atlas:2211
+# docker save verse_gapminder > verse_gapminder.tar
 ```
 run the docker container
 ```

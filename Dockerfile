@@ -1,7 +1,7 @@
 FROM scratch
 FROM ubuntu:18.04
 LABEL maintainer="andreas.wombacher@aureliusenterprise.com"
-ARG VERSION=2.2.0
+ARG VERSION=2.3.0
 
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -20,11 +20,15 @@ RUN apt-get update \
     && wget http://mirror.linux-ia64.org/apache/atlas/${VERSION}/apache-atlas-${VERSION}-sources.tar.gz \
     && mkdir -p /tmp/atlas-src \
     && tar --strip 1 -xzvf apache-atlas-${VERSION}-sources.tar.gz -C /tmp/atlas-src \
-    && rm apache-atlas-${VERSION}-sources.tar.gz \
-    && cd /tmp/atlas-src \
-    && export MAVEN_OPTS="-Xms2g -Xmx2g" \
+    && rm apache-atlas-${VERSION}-sources.tar.gz 
+
+RUN cd /tmp/atlas-src \
+    && sed -i "s/<\/repositories>/<repository><id>maven-restlet<\/id><name>Public online Restlet repository<\/name><url>https:\/\/maven.restlet.talend.com\/<\/url><\/repository><\/repositories>/g" /tmp/atlas-src/pom.xml \
+    && sed -i "s/\/login.jsp/login.jsp/g" /tmp/atlas-src/webapp/src/main/java/org/apache/atlas/web/security/AtlasSecurityConfig.java \
+    && sed -i "s/\/login.jsp/login.jsp/g" /tmp/atlas-src/webapp/src/main/java/org/apache/atlas/web/filters/AtlasAuthenticationEntryPoint.java \
+    && export MAVEN_OPTS="-Xms2g -Xmx2g -DskipTests -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true" \ 
     && export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64" \
-    && mvn clean -Dmaven.repo.local=/tmp/.mvn-repo -Drat.skip=true -Dhttps.protocols=TLSv1.2 -DskipTests package -Pdist,embedded-hbase-solr \
+    && mvn clean -Dmaven.repo.local=/tmp/.mvn-repo -Drat.skip=true -Dhttps.protocols=TLSv1.2 -DskipTests -Djavax.net.debug=ssl -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true package -Pdist,embedded-hbase-solr \
     && tar -xzvf /tmp/atlas-src/distro/target/apache-atlas-${VERSION}-server.tar.gz -C /opt \
     && rm -Rf /tmp/atlas-src \
     && rm -Rf /tmp/.mvn-repo \
@@ -43,7 +47,7 @@ RUN cd /opt/apache-atlas-${VERSION}/bin \
     && patch -b -f < atlas_start.py.patch \
     && patch -b -f < atlas_config.py.patch
 
-#COPY conf/hbase/hbase-site.xml.template /opt/apache-atlas-${VERSION}/conf/hbase/hbase-site.xml.template
+COPY conf/hbase/hbase-site.xml.template /opt/apache-atlas-${VERSION}/conf/hbase/hbase-site.xml.template
 COPY conf/atlas-env.sh /opt/apache-atlas-${VERSION}/conf/atlas-env.sh
 COPY conf/atlas-application.properties /opt/apache-atlas-${VERSION}/conf/atlas-application.properties
 COPY bin/startup.sh /opt/apache-atlas-${VERSION}/bin/startup.sh
@@ -75,4 +79,3 @@ COPY conf/gremlin/janusgraph-hbase-solr.properties /opt/apache-tinkerpop-gremlin
 COPY bin/start-gremlin-server.sh /opt/apache-atlas-${VERSION}/bin/start-gremlin-server.sh
 
 RUN chmod 700 /opt/apache-atlas-${VERSION}/bin/start-gremlin-server.sh
-

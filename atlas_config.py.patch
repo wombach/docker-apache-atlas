@@ -35,8 +35,8 @@
 +        if not os.path.exists(pid_file):
 +            sys.stdout.write('\nApache Atlas startup failed!\nCheck logs: /opt/apache-atlas-2.2.0/logs/application.log')
 +            sys.stdout.flush()
-+        exit()
-+        break
++            exit()
++            break
          count = count + 1
  
      sys.stdout.write('\n')

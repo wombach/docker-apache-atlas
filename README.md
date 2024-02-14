@@ -5,7 +5,7 @@
 Apache Atlas Docker image
 =======================================
 
-This `Apache Atlas` is built from the 2.1.0-release source tarball and patched to be run in a Docker container.
+This `Apache Atlas` is built from the 2.2.0-release source tarball and patched to be run in a Docker container.
 
 Atlas is built with `embedded HBase + Solr` and it is pre-initialized, so you can use it right after image download without additional steps.
 
@@ -177,9 +177,29 @@ The following environment variables are available for configuration:
 
 Building
 ---------
-docker build . -t docker-apache-atlas:2.2.0
+docker build . -t docker-apache-atlas:2.2.0.4
 
+docker images
+-> gives you the <image ID>
 
+docker tag <image ID> wombach/docker-apache-atlas:2.2.0.4
+
+docker run -d -p 21000:21000 --name atlas220 wombach/docker-apache-atlas:2.2.0 /opt/apache-atlas-2.2.0/bin/startup.sh
+
+If you want to connect to the embedded Kafka, you will need the followign run command:
+docker run -d --network=host --name atlas220 wombach/docker-apache-atlas:2.2.0.2 /opt/apache-atlas-2.2.0/bin/startup.sh
+
+docker ps 
+provides you with the container Iid
+
+for debugging check the log file
+docker exec -it <container id> /bin/bash
+
+publish the image to docker hub
+docker push wombach/docker-apache-atlas:2.2.0.4
+
+docker tag a1a6377f55bd wombach/docker-apache-atlas:latest
+docker push wombach/docker-apache-atlas:latest
 
 Bug Tracker
 -----------
@@ -194,3 +214,9 @@ Maintainer
 This image is maintained by [Vadim Korchagin](mailto:vadim@clusterside.com)
 
 * https://github.com/sburn/docker-apache-atlas
+
+
+Creating additional users in keycloak
+=====================================
+examples of using the keycloak part
+https://github.com/marcospereirampj/python-keycloak/blob/master/README.md

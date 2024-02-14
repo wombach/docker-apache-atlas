@@ -1,21 +1,22 @@
 FROM scratch
 FROM ubuntu:18.04
 LABEL maintainer="andreas.wombacher@aureliusenterprise.com"
-ARG VERSION=2.2.0
+ARG VERSION=2.2.1
 
 RUN apt-get update \
     && apt-get -y upgrade \
     && apt-get -y install apt-utils \
     && apt-get -y install \
-    vim\
+    vim \
     maven \
     wget \
     git \
     python \
     openjdk-8-jdk-headless \
     patch \
-    net-tools\
+    net-tools \
     unzip \
+    lsof \
     && cd /tmp \
     && wget http://mirror.linux-ia64.org/apache/atlas/${VERSION}/apache-atlas-${VERSION}-sources.tar.gz \
     && mkdir -p /tmp/atlas-src \
